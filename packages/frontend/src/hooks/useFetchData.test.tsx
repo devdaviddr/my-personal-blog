@@ -1,16 +1,7 @@
 import { renderHook, waitFor } from '@testing-library/react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { describe, it, expect, vi } from 'vitest'
-import axios from 'axios'
 import { useFetchData } from './useFetchData'
-
-vi.mock('axios', () => ({
-  default: {
-    get: vi.fn(),
-  },
-}))
-
-const mockedAxios = vi.mocked(axios)
 
 const createWrapper = () => {
   const queryClient = new QueryClient({
@@ -30,9 +21,9 @@ const createWrapper = () => {
 describe('useFetchData', () => {
   it('should fetch data successfully', async () => {
     const mockData = { message: 'Hello' }
-    ;(mockedAxios.get as any).mockResolvedValueOnce({ data: mockData }) // eslint-disable-line @typescript-eslint/no-explicit-any
+    const mockFetchFn = vi.fn().mockResolvedValue(mockData)
 
-    const { result } = renderHook(() => useFetchData('/api/test'), {
+    const { result } = renderHook(() => useFetchData(mockFetchFn), {
       wrapper: createWrapper(),
     })
 
@@ -43,14 +34,13 @@ describe('useFetchData', () => {
     })
 
     expect(result.current.data).toEqual(mockData)
-    expect(mockedAxios.get).toHaveBeenCalledWith('/api/test')
   })
 
   it('should handle error', async () => {
     const errorMessage = 'Network Error'
-    ;(mockedAxios.get as any).mockRejectedValueOnce(new Error(errorMessage)) // eslint-disable-line @typescript-eslint/no-explicit-any
+    const mockFetchFn = vi.fn().mockRejectedValue(new Error(errorMessage))
 
-    const { result } = renderHook(() => useFetchData('/api/test'), {
+    const { result } = renderHook(() => useFetchData(mockFetchFn), {
       wrapper: createWrapper(),
     })
 

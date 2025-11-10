@@ -1,6 +1,19 @@
-import axios from 'axios'
+import { getArticles, getArticleBySlug, getProjects, getProjectBySlug, MarkdownFile } from './content'
 
-export async function fetchPosts() {
-  const response = await axios.get('/api/posts')
-  return response.data.posts
+// Articles API
+export async function fetchPosts(): Promise<MarkdownFile[]> {
+  return await getArticles()
+}
+
+export async function fetchPostById(id: string): Promise<MarkdownFile | null> {
+  return await getArticleBySlug(id)
+}
+
+// Projects API
+export async function fetchProjects(): Promise<MarkdownFile[]> {
+  return await getProjects()
+}
+
+export async function fetchProjectById(id: string): Promise<MarkdownFile | null> {
+  return await getProjectBySlug(id)
 }

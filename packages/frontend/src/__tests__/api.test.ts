@@ -1,36 +1,27 @@
 import { describe, it, expect, vi } from 'vitest'
-import axios from 'axios'
+import { fetchPosts } from '../lib/api'
 
-// Mock axios
-vi.mock('axios', () => ({
-  default: {
-    get: vi.fn(),
-  },
+// Mock the content module
+vi.mock('../lib/content', () => ({
+  getArticles: vi.fn().mockResolvedValue([
+    {
+      slug: 'test-post',
+      frontmatter: {
+        title: 'Test Post',
+        date: '2024-01-01',
+        author: 'Test Author'
+      },
+      content: 'Test content',
+      html: '<p>Test content</p>'
+    }
+  ])
 }))
 
-const mockedAxios = vi.mocked(axios)
-
-describe('API Client', () => {
-  it('should fetch posts from the API', async () => {
-    const mockPosts = {
-      posts: [
-        {
-          id: '1',
-          title: 'Test Post',
-          content: 'Test content',
-          createdAt: '2023-01-01T00:00:00.000Z',
-        },
-      ],
-    }
-
-    ;(mockedAxios.get as any).mockResolvedValueOnce({ data: mockPosts })
-
-    // Import after mock
-    const { fetchPosts } = await import('../lib/api')
-
+describe('API functions', () => {
+  it('fetchPosts returns array of posts', async () => {
     const posts = await fetchPosts()
-
-    expect(mockedAxios.get).toHaveBeenCalledWith('/api/posts')
-    expect(posts).toEqual(mockPosts.posts)
+    expect(posts).toBeInstanceOf(Array)
+    expect(posts[0]).toHaveProperty('slug')
+    expect(posts[0]).toHaveProperty('frontmatter')
   })
 })

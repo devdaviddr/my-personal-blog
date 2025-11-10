@@ -1,384 +1,386 @@
 # Deployment Guide
 
-This guide covers deploying your Developer Blog Platform to Cloudflare's edge network for maximum performance and global reach.
+This guide covers deploying your Developer Blog Platform as a static site to various hosting platforms. Since this is a static site built with Vite, you can deploy it to any static hosting service.
 
 ## Prerequisites
 
 Before deploying, ensure you have:
 
-- ✅ Cloudflare account
-- ✅ Wrangler CLI installed and authenticated
 - ✅ Project built and tested locally
-- ✅ Domain name (optional, but recommended)
+- ✅ Content created in markdown format
+- ✅ Custom domain (optional, but recommended)
 
-## Deployment Architecture
+## Build Process
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│                 │    │                 │    │                 │
-│ Cloudflare      │    │ Cloudflare      │    │ Cloudflare D1   │
-│ Pages           │◄───┤ Workers         │◄───┤ Database        │
-│ (Frontend)      │    │ (API)           │    │ (SQLite)        │
-│                 │    │                 │    │                 │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
-
-## Step-by-Step Deployment
-
-### 1. Prepare for Deployment
-
-#### Build the Project
-```bash
-# Install all dependencies
-npm install
-cd api && npm install && cd ..
-
-# Build frontend
-npm run build
-
-# Build API
-cd api && npm run build && cd ..
-```
-
-#### Environment Variables
-Set up production environment variables in Cloudflare:
+### Local Build
 
 ```bash
-# For the frontend (Pages)
-wrangler pages secret put VITE_API_URL
-# Enter: https://your-api.your-domain.workers.dev
+# Install dependencies
+pnpm install
 
-# For the API (Workers)
-cd api
-wrangler secret put GITHUB_CLIENT_ID
-wrangler secret put GITHUB_CLIENT_SECRET
-wrangler secret put JWT_SECRET
+# Build for production
+pnpm build
+
+# The built files will be in packages/frontend/dist/
 ```
 
-### 2. Deploy Database (D1)
-
-#### Create Production Database
-```bash
-# Create production D1 database
-wrangler d1 create blog-db-prod
-
-# Note the database_id from the output
-# Update api/wrangler.toml with production database_id
-```
-
-#### Update wrangler.toml
-```toml
-name = "developer-blog-api"
-main = "src/index.ts"
-compatibility_date = "2023-10-30"
-
-[env.production]
-[[env.production.d1_databases]]
-binding = "DB"
-database_name = "blog-db-prod"
-database_id = "your-production-database-id"
-```
-
-#### Deploy Schema
-```bash
-# Apply schema to production database
-wrangler d1 execute blog-db-prod --file=./db/schema.sql --env production
-
-# Optional: Seed with initial data
-wrangler d1 execute blog-db-prod --file=./db/seed.sql --env production
-```
-
-### 3. Deploy API (Cloudflare Workers)
+### Verify Build
 
 ```bash
-cd api
+# Preview the production build locally
+pnpm preview
 
-# Deploy to production
-wrangler deploy --env production
-
-# Your API will be available at:
-# https://developer-blog-api.your-subdomain.workers.dev
+# Test that all routes work correctly
+# Check that content loads properly
 ```
 
-#### Verify API Deployment
+## Deployment Options
+
+### Vercel (Recommended)
+
+Vercel offers the best developer experience with automatic deployments and excellent performance.
+
+#### Option A: Vercel CLI
+
 ```bash
-curl https://developer-blog-api.your-subdomain.workers.dev/health
+# Install Vercel CLI
+pnpm add -D vercel
+
+# Deploy
+cd packages/frontend
+vercel
+
+# Follow the prompts to configure your project
 ```
 
-### 4. Deploy Frontend (Cloudflare Pages)
+#### Option B: Git Integration
 
-#### Option A: Git Integration (Recommended)
+1. **Connect Repository**:
+   - Go to [Vercel Dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your GitHub repository
 
-1. **Connect Repository to Cloudflare Pages:**
+2. **Configure Build Settings**:
+   ```
+   Framework Preset: Vite
+   Root Directory: packages/frontend
+   Build Command: pnpm build
+   Output Directory: dist
+   Install Command: pnpm install
+   ```
+
+3. **Environment Variables** (if needed):
+   - Add any environment variables your app requires
+
+4. **Deploy**: Vercel will automatically deploy on every push to main
+
+#### Custom Domain
+
+1. Go to your project settings in Vercel
+2. Navigate to "Domains"
+3. Add your custom domain
+4. Follow DNS configuration instructions
+
+### Netlify
+
+Netlify is another excellent choice with great performance and features.
+
+#### Git Integration
+
+1. **Connect Repository**:
+   - Go to [Netlify Dashboard](https://app.netlify.com)
+   - Click "New site from Git"
+   - Connect your GitHub repository
+
+2. **Build Settings**:
+   ```
+   Base directory: packages/frontend
+   Build command: pnpm build
+   Publish directory: dist
+   ```
+
+3. **Environment Variables**:
+   - Add any required environment variables
+
+4. **Deploy**: Netlify will build and deploy automatically
+
+#### Netlify CLI
+
+```bash
+# Install Netlify CLI
+pnpm add -D netlify-cli
+
+# Build and deploy
+cd packages/frontend
+netlify build
+netlify deploy --prod
+```
+
+### GitHub Pages
+
+Free hosting for public repositories.
+
+#### Setup
+
+```bash
+# Install gh-pages
+cd packages/frontend
+pnpm add -D gh-pages
+
+# Add deploy script to package.json
+{
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  }
+}
+```
+
+#### Deploy
+
+```bash
+# Build and deploy
+cd packages/frontend
+pnpm build
+pnpm deploy
+```
+
+#### Custom Domain
+
+1. Create `packages/frontend/public/CNAME` with your domain
+2. Go to repository Settings → Pages
+3. Add your custom domain
+4. Configure DNS records as instructed
+
+### Railway
+
+Modern cloud platform with excellent developer experience.
+
+1. **Connect Repository**:
+   - Go to [Railway Dashboard](https://railway.app)
+   - Click "New Project"
+   - Connect your GitHub repository
+
+2. **Configure**:
+   ```
+   Build Command: pnpm build
+   Start Command: (leave empty for static sites)
+   Root Directory: packages/frontend
+   ```
+
+3. **Environment Variables**: Add any required variables
+
+### Render
+
+Free static site hosting with good performance.
+
+1. **Connect Repository**:
+   - Go to [Render Dashboard](https://dashboard.render.com)
+   - Click "New +" → "Static Site"
+   - Connect your GitHub repository
+
+2. **Configure**:
+   ```
+   Build Command: pnpm build
+   Publish Directory: packages/frontend/dist
+   ```
+
+### Cloudflare Pages
+
+If you prefer to stay within the Cloudflare ecosystem.
+
+1. **Connect Repository**:
    - Go to [Cloudflare Dashboard](https://dash.cloudflare.com)
    - Navigate to Pages
    - Click "Create a project"
    - Connect your GitHub repository
 
-2. **Configure Build Settings:**
+2. **Build Settings**:
    ```
-   Framework preset: React
-   Build command: npm run build
-   Build output directory: dist
-   Root directory: /
-   ```
-
-3. **Set Environment Variables:**
-   ```
-   VITE_API_URL=https://developer-blog-api.your-subdomain.workers.dev
-   NODE_VERSION=18
+   Build command: pnpm build
+   Build output directory: packages/frontend/dist
+   Root directory: packages/frontend
    ```
 
-#### Option B: Direct Upload
+## Environment Variables
+
+### Development vs Production
+
+Create environment files for different environments:
 
 ```bash
-# Build the project
-npm run build
+# Development
+packages/frontend/.env.local
 
-# Deploy to Pages
-wrangler pages deploy dist --project-name developer-blog
+# Production (set in hosting platform)
+# These will be different for each platform
 ```
 
-### 5. Custom Domain Setup (Optional)
+### Common Variables
 
-#### For the Frontend (Pages)
-1. Go to Pages → Your Project → Custom domains
-2. Add your domain (e.g., `blog.yourdomain.com`)
-3. Update DNS records as instructed
+```env
+# Analytics (optional)
+VITE_GOOGLE_ANALYTICS_ID=GA_MEASUREMENT_ID
 
-#### For the API (Workers)
-1. Go to Workers → Your Worker → Settings → Triggers
-2. Add custom domain (e.g., `api.yourdomain.com`)
-3. Update DNS records
+# Social media (optional)
+VITE_TWITTER_HANDLE=@yourhandle
+VITE_GITHUB_USERNAME=yourusername
 
-#### Update Environment Variables
-After setting up custom domains, update the API URL:
-
-```bash
-# Update frontend environment
-wrangler pages secret put VITE_API_URL
-# Enter: https://api.yourdomain.com
+# Site configuration
+VITE_SITE_TITLE="Your Blog Title"
+VITE_SITE_DESCRIPTION="Your blog description"
 ```
 
-## Environment-Specific Configurations
+## Custom Domain Setup
 
-### Staging Environment
+### DNS Configuration
 
-Create a staging environment for testing:
+Most hosting platforms provide DNS instructions. Generally:
 
-```bash
-# Create staging database
-wrangler d1 create blog-db-staging
+1. **Add CNAME record**: `www.yourdomain.com` → `your-platform-domain.com`
+2. **Add A record**: `yourdomain.com` → platform IP (if required)
+3. **Configure SSL**: Most platforms handle this automatically
 
-# Deploy API to staging
-wrangler deploy --env staging
+### Domain Providers
 
-# Deploy frontend to staging
-wrangler pages deploy dist --project-name developer-blog-staging
-```
-
-### Production Environment
-
-```toml
-# api/wrangler.toml
-[env.production]
-name = "developer-blog-api-prod"
-route = "api.yourdomain.com/*"
-
-[[env.production.d1_databases]]
-binding = "DB"
-database_name = "blog-db-prod"
-database_id = "production-database-id"
-
-[env.production.vars]
-ENVIRONMENT = "production"
-LOG_LEVEL = "warn"
-```
-
-## Database Migrations
-
-### Running Migrations
-
-```bash
-# Create a new migration
-wrangler d1 migrations create blog-db-prod "add_views_column"
-
-# Apply migrations
-wrangler d1 migrations apply blog-db-prod --env production
-```
-
-### Migration Example
-
-```sql
--- migrations/0002_add_views_column.sql
-ALTER TABLE posts ADD COLUMN views INTEGER DEFAULT 0;
-UPDATE posts SET views = 0 WHERE views IS NULL;
-```
-
-## Monitoring and Observability
-
-### Cloudflare Analytics
-
-Enable analytics in your Cloudflare dashboard:
-
-1. **Pages Analytics**: Monitor frontend performance
-2. **Workers Analytics**: Track API usage and performance
-3. **D1 Analytics**: Monitor database queries and performance
-
-### Custom Logging
-
-Add structured logging to your API:
-
-```typescript
-// api/src/utils/logger.ts
-export function logError(error: Error, context: any) {
-  console.error(JSON.stringify({
-    timestamp: new Date().toISOString(),
-    level: 'error',
-    message: error.message,
-    stack: error.stack,
-    context
-  }));
-}
-```
-
-### Health Checks
-
-Monitor your deployment health:
-
-```bash
-# Check API health
-curl https://api.yourdomain.com/health
-
-# Check database connectivity
-curl https://api.yourdomain.com/api/posts?limit=1
-```
-
-## Security Considerations
-
-### Environment Secrets
-
-Never commit secrets to your repository:
-
-```bash
-# Set secrets via Wrangler
-wrangler secret put JWT_SECRET
-wrangler secret put GITHUB_CLIENT_SECRET
-wrangler secret put DATABASE_ENCRYPTION_KEY
-```
-
-### CORS Configuration
-
-Configure CORS properly for your domain:
-
-```typescript
-// api/src/middleware/cors.ts
-export const corsMiddleware = cors({
-  origin: [
-    'https://yourdomain.com',
-    'https://blog.yourdomain.com'
-  ],
-  credentials: true
-});
-```
-
-### Content Security Policy
-
-Add CSP headers for security:
-
-```typescript
-// In your Hono app
-app.use('*', async (c, next) => {
-  await next();
-  c.header('Content-Security-Policy', 
-    "default-src 'self'; script-src 'self' 'unsafe-inline';"
-  );
-});
-```
+- **Namecheap**: Good for developers, reasonable pricing
+- **Cloudflare**: Free DNS with additional features
+- **Google Domains**: Simple interface
+- **GoDaddy**: Popular but more expensive
 
 ## Performance Optimization
 
-### Caching Strategy
+### Build Optimizations
 
-```typescript
-// Cache API responses
-app.get('/api/posts', cache(300), async (c) => {
-  // Your handler
-});
+The project is already optimized, but you can further improve:
 
-// Cache static assets
-app.use('/static/*', cache(86400));
+```javascript
+// packages/frontend/vite.config.ts
+export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          router: ['react-router-dom']
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000
+  }
+})
 ```
 
-### Database Optimization
+### Content Optimization
 
-```sql
--- Create indexes for better performance
-CREATE INDEX idx_posts_published ON posts(published, published_at);
-CREATE INDEX idx_posts_author ON posts(author_id);
-CREATE INDEX idx_post_tags_post ON post_tags(post_id);
+- Use WebP images for better compression
+- Optimize images before adding to content
+- Keep markdown files reasonably sized
+- Use lazy loading for images
+
+## Monitoring and Analytics
+
+### Google Analytics
+
+1. Create a GA4 property
+2. Add the measurement ID to your environment variables
+3. The app will automatically include GA tracking
+
+### Other Analytics
+
+- **Vercel Analytics**: Built-in analytics for Vercel deployments
+- **Netlify Analytics**: Available on paid plans
+- **Plausible**: Privacy-focused analytics
+- **Fathom**: Lightweight analytics
+
+## SEO Optimization
+
+### Meta Tags
+
+The app automatically generates meta tags from your content frontmatter. Ensure each post has:
+
+- Descriptive title
+- Good description
+- Relevant tags
+- Author information
+
+### Sitemap
+
+Consider adding a sitemap generation script for better SEO.
+
+## Backup and Recovery
+
+### Content Backup
+
+Since content is in markdown files:
+
+```bash
+# Backup content
+cp -r content/ backup/content-$(date +%Y%m%d)/
+
+# Backup entire project
+git add .
+git commit -m "Backup: $(date)"
+git push origin main
 ```
+
+### Database Migration (Future)
+
+If you add a database later, plan for migration:
+
+1. Export data from old system
+2. Transform data to new format
+3. Import into new system
+4. Update application code
+5. Test thoroughly
 
 ## Troubleshooting
 
 ### Common Issues
 
-#### 1. Database Connection Failed
-```bash
-# Check database binding
-wrangler d1 list
+#### Build Failures
 
-# Verify wrangler.toml configuration
-cat api/wrangler.toml
+```bash
+# Clear cache and rebuild
+cd packages/frontend
+rm -rf node_modules dist
+pnpm install
+pnpm build
 ```
 
-#### 2. API Not Found (404)
-- Check Workers route configuration
-- Verify deployment was successful
-- Check custom domain DNS settings
+#### Content Not Loading
 
-#### 3. CORS Errors
-- Verify API URL in frontend environment variables
-- Check CORS middleware configuration
-- Ensure domains are whitelisted
+- Check that markdown files have correct frontmatter
+- Ensure `published: true` for live content
+- Verify file paths in import.meta.glob patterns
 
-#### 4. Build Failures
-```bash
-# Clear build cache
-rm -rf dist node_modules
-npm install
-npm run build
-```
+#### Routing Issues
 
-### Debugging
+- Test all routes locally with `pnpm preview`
+- Check that your hosting platform supports SPA routing
+- Add `_redirects` file for Netlify or `vercel.json` for Vercel
 
-#### View Worker Logs
-```bash
-wrangler tail developer-blog-api --env production
-```
+#### Performance Issues
 
-#### Test Database Connection
-```bash
-wrangler d1 execute blog-db-prod --command "SELECT COUNT(*) FROM posts;" --env production
-```
+- Check bundle size with `pnpm build --mode analyze`
+- Optimize images and reduce unused dependencies
+- Enable compression on your hosting platform
 
-## Rollback Strategy
+### Platform-Specific Issues
 
-### API Rollback
-```bash
-# Deploy previous version
-git checkout previous-tag
-cd api && wrangler deploy --env production
-```
+#### Vercel
+- Check build logs in dashboard
+- Ensure correct root directory setting
+- Verify environment variables are set
 
-### Database Rollback
-```bash
-# Create backup before deployment
-wrangler d1 execute blog-db-prod --command ".dump" --env production > backup.sql
+#### Netlify
+- Check deploy logs
+- Ensure publish directory is correct
+- Verify build hooks are working
 
-# Restore if needed
-wrangler d1 execute blog-db-prod --file backup.sql --env production
-```
+#### GitHub Pages
+- Ensure repository is public
+- Check that gh-pages branch is created
+- Verify custom domain settings
 
 ## Continuous Deployment
 
@@ -387,7 +389,7 @@ wrangler d1 execute blog-db-prod --file backup.sql --env production
 Create `.github/workflows/deploy.yml`:
 
 ```yaml
-name: Deploy to Cloudflare
+name: Deploy to Vercel
 
 on:
   push:
@@ -401,23 +403,68 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      
-      - name: Install dependencies
-        run: npm ci
-      
-      - name: Build
-        run: npm run build
-      
-      - name: Deploy API
-        run: cd api && npx wrangler deploy --env production
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      
-      - name: Deploy Pages
-        run: npx wrangler pages deploy dist --project-name developer-blog
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          cache: 'pnpm'
+      - run: pnpm install
+      - run: pnpm build
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          working-directory: packages/frontend
 ```
+
+## Security Considerations
+
+### Content Security Policy
+
+Add CSP headers if your hosting platform supports it:
+
+```
+default-src 'self';
+script-src 'self' 'unsafe-inline';
+style-src 'self' 'unsafe-inline';
+img-src 'self' data: https:;
+```
+
+### HTTPS
+
+All major hosting platforms provide HTTPS automatically. Ensure your custom domain has SSL enabled.
+
+### Environment Variables
+
+Never commit sensitive information to your repository. Use the hosting platform's environment variable management.
+
+## Cost Comparison
+
+| Platform | Free Tier | Paid Plans | Best For |
+|----------|-----------|------------|----------|
+| Vercel | 100GB bandwidth | $20+/month | Best DX |
+| Netlify | 100GB bandwidth | $19+/month | Features |
+| GitHub Pages | Unlimited | Free | Simple sites |
+| Railway | 512MB RAM | $5+/month | Full-stack |
+| Render | 100GB bandwidth | $7+/month | Static sites |
+
+## Migration Between Platforms
+
+### From One Platform to Another
+
+1. **Backup content and configuration**
+2. **Update DNS records** (if changing domains)
+3. **Configure new platform** with same settings
+4. **Test deployment** thoroughly
+5. **Update DNS** to point to new platform
+6. **Monitor** for any issues
+
+### Adding a Backend Later
+
+If you decide to add dynamic features:
+
+1. Keep the frontend as a static site
+2. Add a separate API service
+3. Update frontend to call the new API
+4. Choose a platform that supports both static and API deployment
 
 ---
 

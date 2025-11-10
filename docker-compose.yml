@@ -14,21 +14,6 @@ services:
       - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts
       - ./packages/frontend/tsconfig.json:/app/packages/frontend/tsconfig.json
     environment:
-      - VITE_API_URL=http://localhost:3000
-    networks:
-      - blog-network
-
-  backend:
-    build:
-      context: .
-      dockerfile: packages/backend/Dockerfile
-    container_name: blog-backend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./packages/backend/src:/app/packages/backend/src
-      - ./packages/backend/tsconfig.json:/app/packages/backend/tsconfig.json
-    environment:
       - NODE_ENV=development
     networks:
       - blog-network

@@ -1,173 +1,248 @@
 # Developer Blog Platform
 
-A modern, reusable blog platform built with React, TypeScript, Tailwind CSS, Hono.js, and Cloudflare technologies.
+A modern, static blog platform built with React, TypeScript, and Tailwind CSS. Write your content in Markdown and deploy anywhere.
 
-## Monorepo Structure
+## Features
 
-This project uses a monorepo structure with the following packages:
+- 🚀 **Static Site**: No backend required - deploy to any static hosting
+- 📝 **Markdown Content**: Write blog posts and project showcases in Markdown
+- 🎨 **Modern UI**: Responsive design with Tailwind CSS
+- ⚡ **Fast Performance**: Optimized static site with Vite
+- 🔍 **SEO Friendly**: Proper meta tags and semantic HTML
+- 🏷️ **Tag System**: Organize content with tags and categories
+- 📱 **Mobile First**: Responsive design that works on all devices
 
-- `packages/frontend` - React + Vite + TypeScript + Tailwind frontend
-- `packages/backend` - Hono.js + TypeScript API server
+## Tech Stack
+
+- **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
+- **Content**: Markdown with frontmatter support
+- **Processing**: Remark + Gray Matter for content parsing
+- **Testing**: Vitest + Testing Library
+- **Deployment**: Static site (Vercel, Netlify, GitHub Pages, etc.)
+
+## Project Structure
+
+```
+├── content/               # Markdown content
+│   ├── articles/         # Blog posts
+│   └── projects/         # Project showcases
+├── packages/
+│   └── frontend/         # React application
+│       ├── src/
+│       │   ├── components/  # Reusable UI components
+│       │   ├── features/    # Feature-specific components
+│       │   ├── lib/         # Content processing utilities
+│       │   └── styles/      # Global styles
+│       └── package.json
+├── docs/                  # Documentation
+├── docker-compose.yml     # Development environment
+└── README.md
+```
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- npm
+- pnpm (recommended) or npm
 
 ### Installation
 
 ```bash
-# Install all dependencies
-npm install
+# Clone the repository
+git clone https://github.com/yourusername/developer-blog-platform.git
+cd developer-blog-platform
+
+# Install dependencies
+pnpm install
 ```
 
 ### Development
 
 ```bash
-# Start both frontend and backend in development mode
-npm run dev
+# Start development server
+pnpm dev
 
-# Or start them separately:
-# Frontend only
-cd packages/frontend && npm run dev
-
-# Backend only
-cd packages/backend && npm run dev
+# The site will be available at http://localhost:5173
 ```
 
 ### Building
 
 ```bash
-# Build all packages
-npm run build
+# Build for production
+pnpm build
 
-# Build individual packages
-cd packages/frontend && npm run build
-cd packages/backend && npm run build
+# Preview production build
+pnpm preview
 ```
 
-### Testing
+## Content Management
 
-```bash
-# Run all tests
-npm test
+### Writing Blog Posts
 
-# Run tests for individual packages
-cd packages/frontend && npm test
-cd packages/backend && npm test
+Create new blog posts in `content/articles/` with the format `YYYY-MM-DD-title.md`:
+
+```markdown
+---
+title: "Your Blog Post Title"
+date: "2024-11-10"
+author: "Your Name"
+description: "Brief description of the post"
+tags: ["tag1", "tag2", "tag3"]
+published: true
+---
+
+# Your Blog Post
+
+Your content here. Supports **bold**, *italic*, [links](https://example.com), and more.
+
+## Code Blocks
+
+```javascript
+function hello() {
+  console.log('Hello, World!')
+}
 ```
 
-### Code Quality
+## Lists
 
-```bash
-# Lint all packages
-npm run lint
-
-# Type check all packages
-npm run type-check
+- Item 1
+- Item 2
+- Item 3
 ```
 
-## Project Structure
+### Writing Project Showcases
 
-```
-├── packages/
-│   ├── frontend/
-│   │   ├── src/
-│   │   │   ├── components/     # React components
-│   │   │   ├── pages/         # Page components
-│   │   │   ├── hooks/         # Custom hooks
-│   │   │   ├── utils/         # Utility functions
-│   │   │   ├── types/         # TypeScript types
-│   │   │   ├── lib/           # API clients, configs
-│   │   │   ├── styles/        # Global styles
-│   │   │   ├── assets/        # Static assets
-│   │   │   ├── constants/     # App constants
-│   │   │   └── contexts/      # React contexts
-│   │   ├── package.json
-│   │   ├── vite.config.ts
-│   │   └── tsconfig.json
-│   └── backend/
-│       ├── src/
-│       │   ├── routes/        # API routes
-│       │   ├── middleware/    # Hono middleware
-│       │   ├── services/      # Business logic
-│       │   ├── db/           # Database schemas
-│       │   ├── types/        # API types
-│       │   └── utils/        # Utility functions
-│       ├── package.json
-│       └── tsconfig.json
-├── .eslintrc.js               # Shared ESLint config
-├── .prettierrc               # Shared Prettier config
-├── tsconfig.base.json        # Shared TypeScript config
-└── package.json              # Root package with workspaces
+Create project showcases in `content/projects/` with the format `project-name.md`:
+
+```markdown
+---
+title: "Project Name"
+date: "2024-11-05"
+author: "Your Name"
+description: "Brief project description"
+tags: ["technology", "category"]
+published: true
+demo: "https://project-demo.com"
+---
+
+# Project Title
+
+Project description, features, and details...
 ```
 
-## Tech Stack
+### Frontmatter Fields
 
-### Frontend
-- **React 18** - UI library
-- **TypeScript** - Type safety
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vitest** - Testing framework
-
-### Backend
-- **Hono.js** - Web framework for Cloudflare Workers
-- **TypeScript** - Type safety
-- **Vitest** - Testing framework
+- `title`: Post/project title
+- `date`: Publication date (YYYY-MM-DD)
+- `author`: Author name
+- `description`: Brief description for previews
+- `tags`: Array of tags for categorization
+- `published`: Set to `false` to hide content
+- `demo`: (Projects only) Link to live demo
 
 ## Development Workflow
 
-1. **Write tests first** (TDD approach)
-2. **Implement features** in small, testable increments
-3. **Run tests** to ensure everything works
-4. **Refactor** while keeping tests passing
-5. **Commit** with conventional commit messages
+1. **Write Content**: Create markdown files in the appropriate content directory
+2. **Test Locally**: Run `pnpm dev` to preview changes
+3. **Build & Test**: Run `pnpm build` and `pnpm test` to ensure everything works
+4. **Deploy**: Push to your hosting platform
 
-## Scripts
+## Available Scripts
 
-### Root Level Scripts
-- `npm run dev` - Start both frontend and backend
-- `npm run build` - Build all packages
-- `npm run lint` - Lint all packages
-- `npm run type-check` - Type check all packages
-- `npm test` - Run all tests
-- `npm run clean` - Clean all build artifacts
+### Root Level
+- `pnpm install` - Install all dependencies
+- `pnpm dev` - Start development server
+- `pnpm build` - Build all packages
+- `pnpm preview` - Preview production build
 
-### Frontend Scripts
-- `npm run dev` - Start Vite dev server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Lint code
-- `npm run type-check` - Type check
-- `npm test` - Run tests
+### Frontend Package
+- `pnpm dev` - Start Vite dev server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Lint code
+- `pnpm type-check` - Type check
+- `pnpm test` - Run tests
+- `pnpm test:watch` - Run tests in watch mode
 
-### Backend Scripts
-- `npm run dev` - Start Hono dev server with hot reload
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Lint code
-- `npm run type-check` - Type check
-- `npm test` - Run tests
+## Code Quality
 
-## API Endpoints
+```bash
+# Lint code
+pnpm lint
 
-### Health Check
-```
-GET /health
+# Type checking
+pnpm type-check
+
+# Run tests
+pnpm test
 ```
 
-### Posts
+## Deployment
+
+### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Vite configuration
+3. Set build command: `pnpm build`
+4. Set output directory: `packages/frontend/dist`
+
+### Netlify
+
+1. Connect your repository to Netlify
+2. Set build command: `pnpm build`
+3. Set publish directory: `packages/frontend/dist`
+
+### GitHub Pages
+
+```bash
+# Build the project
+pnpm build
+
+# Deploy to GitHub Pages (requires GitHub CLI)
+gh-pages -d packages/frontend/dist
 ```
-GET  /api/posts     # Get all posts
-POST /api/posts     # Create a new post
+
+### Docker
+
+```bash
+# Build Docker image
+docker build -t blog-platform packages/frontend
+
+# Run container
+docker run -p 5173:5173 blog-platform
 ```
+
+## Customization
+
+### Styling
+
+The project uses Tailwind CSS for styling. Customize the design by:
+
+1. Modifying `packages/frontend/src/styles/index.css`
+2. Updating the Tailwind configuration in `packages/frontend/tailwind.config.js`
+3. Adjusting component styles in the component files
+
+### Content Structure
+
+Feel free to modify the content directory structure and update the content processing utilities in `packages/frontend/src/lib/content.ts` to match your needs.
+
+### Adding Features
+
+The platform is built with modularity in mind. Add new features by:
+
+1. Creating new components in `packages/frontend/src/components/`
+2. Adding new pages in `packages/frontend/src/features/`
+3. Updating the routing in `packages/frontend/src/App.tsx`
 
 ## Contributing
 
-See [AGENTS.md](./AGENTS.md) for detailed guidelines for agentic coding assistants.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
 ## License
 
