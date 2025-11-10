@@ -13,11 +13,11 @@
     "test:coverage": "vitest --coverage"
   },
   "dependencies": {
-    "hono": "^3.11.7"
+    "hono": "^3.12.12"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20231016.0",
-    "@types/node": "^20.8.7",
+    "@types/node": "^20.19.24",
     "@typescript-eslint/eslint-plugin": "^6.8.0",
     "@typescript-eslint/parser": "^6.8.0",
     "eslint": "^8.51.0",
