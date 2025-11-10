@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: packages/frontend/Dockerfile
+    container_name: blog-frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./packages/frontend/src:/app/packages/frontend/src
+      - ./packages/frontend/index.html:/app/packages/frontend/index.html
+      - ./packages/frontend/vite.config.ts:/app/packages/frontend/vite.config.ts
+      - ./packages/frontend/tsconfig.json:/app/packages/frontend/tsconfig.json
+    environment:
+      - NODE_ENV=development
+    networks:
+      - blog-network
+
+networks:
+  blog-network:
+    driver: bridge

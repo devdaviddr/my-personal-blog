@@ -1,20 +1,18 @@
 # Getting Started
 
-Welcome to the Developer Blog Platform! This guide will help you get up and running quickly.
+Welcome to the Developer Blog Platform! This guide will help you get up and running quickly with your static blog.
 
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
 
 - **Node.js** (version 18 or higher)
-- **npm** or **yarn** package manager
+- **pnpm** package manager (recommended) or **npm**
 - **Git** for version control
-- **Cloudflare account** for deployment
-- **Wrangler CLI** for Cloudflare development
 
 ### Installing Prerequisites
 
-#### Node.js and npm
+#### Node.js and pnpm
 ```bash
 # Check if Node.js is installed
 node --version
@@ -25,12 +23,9 @@ npm --version
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
 nvm install 18
 nvm use 18
-```
 
-#### Wrangler CLI
-```bash
-npm install -g wrangler
-wrangler login
+# Install pnpm globally
+npm install -g pnpm
 ```
 
 ## Installation Steps
@@ -45,159 +40,206 @@ cd developer-blog-platform
 ### 2. Install Dependencies
 
 ```bash
-# Install frontend dependencies
-npm install
-
-# Install API dependencies
-cd api
-npm install
-cd ..
+# Install all dependencies
+pnpm install
 ```
 
-### 3. Environment Configuration
-
-Create environment files from the templates:
+### 3. Start Development Server
 
 ```bash
-# Frontend environment
-cp .env.example .env.local
-
-# API environment (if separate)
-cp api/.env.example api/.env.local
-```
-
-Edit `.env.local` with your configuration:
-
-```env
-# Required for local development
-VITE_API_URL=http://localhost:8787
-
-# Database (will be configured in step 4)
-DATABASE_URL=""
-DATABASE_ID=""
-
-# Optional: Authentication
-GITHUB_CLIENT_ID=""
-GITHUB_CLIENT_SECRET=""
-
-# Optional: Analytics
-GOOGLE_ANALYTICS_ID=""
-```
-
-### 4. Database Setup
-
-#### Create Cloudflare D1 Database
-
-```bash
-# Create a new D1 database
-npx wrangler d1 create blog-db
-
-# This will output something like:
-# database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
-```
-
-#### Update wrangler.toml
-
-Edit `api/wrangler.toml` with your database information:
-
-```toml
-name = "developer-blog-api"
-main = "src/index.ts"
-compatibility_date = "2023-10-30"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "blog-db"
-database_id = "your-database-id-from-above"
-```
-
-#### Initialize Database Schema
-
-```bash
-# Apply database migrations
-npx wrangler d1 execute blog-db --file=./api/db/schema.sql
-
-# Seed with sample data (optional)
-npx wrangler d1 execute blog-db --file=./api/db/seed.sql
-```
-
-### 5. Start Development Servers
-
-You'll need to run both the frontend and API servers:
-
-#### Terminal 1 - API Server
-```bash
-cd api
-npm run dev
-```
-
-#### Terminal 2 - Frontend Server
-```bash
-npm run dev
+# Start the development server
+pnpm dev
 ```
 
 Your blog should now be accessible at:
-- **Frontend**: http://localhost:3000
-- **API**: http://localhost:8787
+- **Local Development**: http://localhost:5173
 
-## Verify Installation
+## Adding Your Content
 
-1. Open http://localhost:3000 in your browser
-2. You should see the blog homepage
-3. Try creating a new post (if authentication is set up)
-4. Check the API health endpoint: http://localhost:8787/health
+### Creating Blog Posts
 
-## Next Steps
+1. Create a new file in `content/articles/` with the format: `YYYY-MM-DD-your-post-title.md`
 
-Now that you have the blog running locally:
+2. Add frontmatter and content:
 
-1. **Customize the theme** - Edit Tailwind configuration
-2. **Add content** - Create your first blog post
-3. **Configure authentication** - Set up GitHub OAuth (optional)
-4. **Deploy to production** - See [Deployment Guide](./deployment.md)
+```markdown
+---
+title: "Your First Blog Post"
+date: "2024-11-10"
+author: "Your Name"
+description: "A brief description of your post"
+tags: ["introduction", "web-development"]
+published: true
+---
 
-## Common Issues
+# Your First Blog Post
 
-### Port Already in Use
-If you get "port already in use" errors:
+Welcome to your new blog! This is where your content goes.
 
-```bash
-# Kill processes on ports 3000 and 8787
-npx kill-port 3000
-npx kill-port 8787
+You can write in **Markdown** and it will be automatically converted to HTML.
+
+## Features
+
+- Code syntax highlighting
+- Responsive design
+- SEO optimized
+- Fast loading
 ```
 
-### Database Connection Issues
-- Ensure your `wrangler.toml` has the correct database_id
-- Run `wrangler auth login` to authenticate with Cloudflare
-- Check that the database was created: `wrangler d1 list`
+### Creating Project Showcases
 
-### Dependency Issues
+1. Create a new file in `content/projects/` with your project name: `your-project-name.md`
+
+2. Add project details:
+
+```markdown
+---
+title: "My Awesome Project"
+date: "2024-11-05"
+author: "Your Name"
+description: "A brief description of your project"
+tags: ["react", "typescript", "web-app"]
+published: true
+demo: "https://your-project-demo.com"
+---
+
+# My Awesome Project
+
+## Overview
+
+Describe your project here...
+
+## Features
+
+- Feature 1
+- Feature 2
+- Feature 3
+
+## Tech Stack
+
+- React
+- TypeScript
+- Tailwind CSS
+```
+
+## Customization
+
+### Personalizing the Blog
+
+1. **Update site information**: Edit the title, description, and author information in your content files
+
+2. **Customize styling**: Modify `packages/frontend/src/styles/index.css` and `packages/frontend/tailwind.config.js`
+
+3. **Add your photo/avatar**: Update the header component with your information
+
+### Advanced Configuration
+
+The blog uses Vite for building. You can customize the build process by editing:
+
+- `packages/frontend/vite.config.ts` - Build configuration
+- `packages/frontend/tailwind.config.js` - Styling configuration
+- `packages/frontend/tsconfig.json` - TypeScript configuration
+
+## Testing Your Setup
+
+### Run Tests
+
 ```bash
-# Clear npm cache and reinstall
-rm -rf node_modules package-lock.json
-npm install
+# Run all tests
+pnpm test
 
-# For the API
-cd api
-rm -rf node_modules package-lock.json
-npm install
+# Run tests in watch mode
+pnpm test:watch
+```
+
+### Build for Production
+
+```bash
+# Build the project
+pnpm build
+
+# Preview the production build
+pnpm preview
+```
+
+## Deployment Options
+
+### Vercel (Recommended)
+
+1. **Connect Repository**: Go to [Vercel](https://vercel.com) and connect your GitHub repository
+2. **Configure Build**:
+   - Build Command: `pnpm build`
+   - Output Directory: `packages/frontend/dist`
+3. **Deploy**: Vercel will automatically deploy on every push
+
+### Netlify
+
+1. **Connect Repository**: Go to [Netlify](https://netlify.com) and connect your repository
+2. **Build Settings**:
+   - Build Command: `pnpm build`
+   - Publish Directory: `packages/frontend/dist`
+3. **Deploy**: Netlify will build and deploy your site
+
+### GitHub Pages
+
+```bash
+# Install gh-pages
+pnpm add -D gh-pages
+
+# Add deploy script to package.json
+"deploy": "gh-pages -d packages/frontend/dist"
+
+# Deploy
+pnpm deploy
 ```
 
 ## Development Workflow
 
-1. **Make changes** to your code
-2. **Test locally** with both servers running
-3. **Commit changes** to Git
-4. **Deploy to staging** (optional)
-5. **Deploy to production**
+1. **Write Content**: Create markdown files in the `content/` directory
+2. **Test Locally**: Use `pnpm dev` to preview changes
+3. **Commit Changes**: Use conventional commit messages
+4. **Deploy**: Push to your hosting platform
+
+## Common Issues
+
+### Content Not Showing Up
+
+- Ensure your markdown files have `published: true` in the frontmatter
+- Check that the file follows the correct naming convention
+- Restart the development server
+
+### Build Errors
+
+```bash
+# Clear cache and reinstall
+rm -rf node_modules pnpm-lock.yaml
+pnpm install
+```
+
+### Styling Issues
+
+- Check that Tailwind CSS is properly configured
+- Ensure your custom styles are imported in `main.tsx`
+
+## Next Steps
+
+Now that you have your blog running:
+
+1. **Add More Content**: Create several blog posts and project showcases
+2. **Customize Design**: Update colors, fonts, and layout
+3. **Add Features**: Consider adding search, comments, or analytics
+4. **Set Up Analytics**: Add Google Analytics or similar tracking
+5. **Configure Domain**: Point a custom domain to your deployment
 
 ## Getting Help
 
-- Check the [API Reference](./api-reference.md) for backend questions
-- See [Configuration](./configuration.md) for setup options
-- Join our [Discord community](https://discord.gg/yourdiscord)
-- Open an [issue on GitHub](https://github.com/yourusername/developer-blog-platform/issues)
+- Check the [Configuration Guide](./configuration.md) for advanced setup
+- Review the [API Reference](./api-reference.md) for content structure details
+- Open an [issue](https://github.com/yourusername/developer-blog-platform/issues) on GitHub
+
+---
+
+**Next:** [Configuration Guide](./configuration.md)
 
 ---
 

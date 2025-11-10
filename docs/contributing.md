@@ -1,6 +1,6 @@
 # Contributing Guide
 
-Thank you for your interest in contributing to the Developer Blog Platform! This guide will help you get started with contributing to the project.
+Thank you for your interest in contributing to the Developer Blog Platform! This guide will help you get started with contributing to this static site blog.
 
 ## 🤝 How to Contribute
 
@@ -11,6 +11,7 @@ We welcome contributions of all kinds:
 - 🎨 UI/UX improvements
 - 🧪 Tests and test coverage
 - 🔧 Performance optimizations
+- ✍️ Content contributions (blog posts, project showcases)
 
 ## 📋 Before You Start
 
@@ -24,9 +25,8 @@ We welcome contributions of all kinds:
 ### Prerequisites
 
 - Node.js 18+
-- npm or yarn
+- pnpm (recommended) or npm
 - Git
-- Cloudflare account (for testing deployment features)
 
 ### Development Setup
 
@@ -38,24 +38,16 @@ We welcome contributions of all kinds:
 
 2. **Install Dependencies**
    ```bash
-   npm install
-   cd api && npm install && cd ..
+   pnpm install
    ```
 
-3. **Set Up Environment**
+3. **Start Development Server**
    ```bash
-   cp .env.example .env.local
-   cp api/.env.example api/.env.local
+   pnpm dev
    ```
 
-4. **Start Development Servers**
-   ```bash
-   # Terminal 1 - API
-   cd api && npm run dev
-   
-   # Terminal 2 - Frontend
-   npm run dev
-   ```
+4. **Open in Browser**
+   - The site will be available at http://localhost:5173
 
 ## 📝 Coding Standards
 
@@ -66,20 +58,18 @@ We use the following tools to maintain code quality:
 - **ESLint** - JavaScript/TypeScript linting
 - **Prettier** - Code formatting
 - **TypeScript** - Type safety
-- **Husky** - Git hooks for quality checks
 
 #### Run Code Quality Checks
 
 ```bash
-# Lint and format
-npm run lint
-npm run format
+# Lint code
+pnpm lint
 
 # Type checking
-npm run type-check
+pnpm type-check
 
-# Run all checks
-npm run check
+# Run tests
+pnpm test
 ```
 
 ### Commit Convention
@@ -102,13 +92,15 @@ type(scope): description
 - `refactor`: Code refactoring
 - `test`: Adding or updating tests
 - `chore`: Maintenance tasks
+- `content`: Content additions/updates
 
 #### Examples
 ```bash
-feat(api): add post pagination endpoint
-fix(ui): resolve dark mode toggle issue
+feat(ui): add dark mode toggle
+fix(blog): resolve markdown rendering issue
 docs(readme): update installation instructions
-test(posts): add unit tests for post creation
+content(blog): add react best practices post
+test(components): add tests for header component
 ```
 
 ### Branch Naming
@@ -119,36 +111,30 @@ Use descriptive branch names:
 type/short-description
 
 # Examples
-feat/post-pagination
-fix/dark-mode-toggle
-docs/api-reference-update
-refactor/auth-middleware
+feat/dark-mode-toggle
+fix/markdown-rendering
+docs/update-readme
+content/add-react-post
 ```
 
 ## 🏗️ Project Structure
 
 ```
+packages/frontend/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── ui/             # Reusable UI components
 │   │   ├── layout/         # Layout components
 │   │   └── features/       # Feature-specific components
+│   ├── lib/                # Utilities and content processing
 │   ├── hooks/              # Custom React hooks
-│   ├── pages/              # Page components
-│   ├── utils/              # Utility functions
-│   ├── types/              # TypeScript type definitions
-│   └── styles/             # Styling files
-├── api/
-│   ├── src/
-│   │   ├── routes/         # API route handlers
-│   │   ├── middleware/     # Express/Hono middleware
-│   │   ├── services/       # Business logic
-│   │   ├── utils/          # Utility functions
-│   │   └── types/          # TypeScript types
-│   └── db/                 # Database schema and migrations
-├── docs/                   # Documentation
-├── tests/                  # Test files
-└── public/                 # Static assets
+│   ├── styles/             # Styling files
+│   └── test/               # Test utilities
+├── content/                # Markdown content
+│   ├── articles/          # Blog posts
+│   └── projects/          # Project showcases
+├── docs/                  # Documentation
+└── public/                # Static assets
 ```
 
 ## 🧪 Testing
@@ -157,88 +143,68 @@ refactor/auth-middleware
 
 ```bash
 # Run all tests
-npm test
+pnpm test
 
 # Run tests in watch mode
-npm run test:watch
+pnpm test:watch
 
 # Run tests with coverage
-npm run test:coverage
-
-# API tests
-cd api && npm test
+pnpm test:coverage
 ```
 
 ### Writing Tests
 
-#### Frontend Tests (React Testing Library)
+#### Component Tests (React Testing Library)
 
 ```typescript
 // src/components/__tests__/Button.test.tsx
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Button } from '../Button';
+import { render, screen } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { Button } from '../Button'
 
 describe('Button', () => {
   it('renders with correct text', () => {
-    render(<Button>Click me</Button>);
-    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
-  });
+    render(<Button>Click me</Button>)
+    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument()
+  })
 
   it('calls onClick handler when clicked', async () => {
-    const handleClick = jest.fn();
-    render(<Button onClick={handleClick}>Click me</Button>);
-    
-    await userEvent.click(screen.getByRole('button'));
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-});
+    const handleClick = jest.fn()
+    render(<Button onClick={handleClick}>Click me</Button>)
+
+    await userEvent.click(screen.getByRole('button'))
+    expect(handleClick).toHaveBeenCalledTimes(1)
+  })
+})
 ```
 
-#### API Tests (Hono Testing)
+#### Content Processing Tests
 
 ```typescript
-// api/src/routes/__tests__/posts.test.ts
-import { testClient } from 'hono/testing';
-import { app } from '../posts';
+// src/lib/__tests__/markdown.test.ts
+import { processMarkdown, parseMarkdownFile } from '../markdown'
 
-describe('/api/posts', () => {
-  const client = testClient(app);
+describe('markdown processing', () => {
+  it('converts markdown to HTML', async () => {
+    const markdown = '# Hello World'
+    const html = await processMarkdown(markdown)
+    expect(html).toContain('<h1>Hello World</h1>')
+  })
 
-  it('should return all posts', async () => {
-    const res = await client.posts.$get();
-    expect(res.status).toBe(200);
-    
-    const data = await res.json();
-    expect(data).toHaveProperty('posts');
-    expect(Array.isArray(data.posts)).toBe(true);
-  });
+  it('parses frontmatter correctly', async () => {
+    const content = `---
+title: Test Post
+date: 2024-01-01
+---
 
-  it('should create a new post', async () => {
-    const postData = {
-      title: 'Test Post',
-      content: 'Test content',
-      tags: ['test']
-    };
+# Content here
+`
 
-    const res = await client.posts.$post({ json: postData });
-    expect(res.status).toBe(201);
-    
-    const data = await res.json();
-    expect(data.title).toBe(postData.title);
-  });
-});
-```
-
-### Test Database
-
-For API tests, use a separate test database:
-
-```bash
-# Create test database
-npx wrangler d1 create blog-db-test
-
-# Update api/wrangler.toml with test environment
+    const result = await parseMarkdownFile(content, 'test')
+    expect(result.frontmatter.title).toBe('Test Post')
+    expect(result.slug).toBe('test')
+  })
+})
 ```
 
 ## 📚 Documentation
@@ -256,13 +222,70 @@ npx wrangler d1 create blog-db-test
 ```
 docs/
 ├── getting-started.md      # Setup and installation
-├── api-reference.md        # API documentation
 ├── deployment.md           # Deployment guide
 ├── configuration.md        # Configuration options
 ├── contributing.md         # This file
 ├── examples/              # Code examples
-├── guides/                # How-to guides
 └── troubleshooting.md     # Common issues
+```
+
+## ✍️ Content Contributions
+
+### Writing Blog Posts
+
+1. Create a new file in `content/articles/` with the format: `YYYY-MM-DD-your-post-title.md`
+
+2. Add frontmatter and content:
+
+```markdown
+---
+title: "Your Blog Post Title"
+date: "2024-11-10"
+author: "Your Name"
+description: "Brief description of the post"
+tags: ["tag1", "tag2"]
+published: true
+---
+
+# Your Blog Post
+
+Your content here. Supports **bold**, *italic*, [links](https://example.com), and more.
+
+## Code Blocks
+
+```javascript
+function hello() {
+  console.log('Hello, World!')
+}
+```
+
+## Features
+
+- Code syntax highlighting
+- Responsive design
+- SEO optimized
+```
+
+### Writing Project Showcases
+
+1. Create a new file in `content/projects/` with your project name: `your-project-name.md`
+
+2. Add project details:
+
+```markdown
+---
+title: "My Awesome Project"
+date: "2024-11-05"
+author: "Your Name"
+description: "Brief project description"
+tags: ["react", "typescript"]
+published: true
+demo: "https://your-project-demo.com"
+---
+
+# Project Title
+
+Project description, features, and details...
 ```
 
 ## 🔍 Code Review Process
@@ -279,18 +302,25 @@ docs/
    - Follow coding standards
    - Update documentation if needed
 
-3. **Commit your changes**
+3. **Test your changes**
+   ```bash
+   pnpm test
+   pnpm build
+   pnpm preview
+   ```
+
+4. **Commit your changes**
    ```bash
    git add .
    git commit -m "feat: add new feature description"
    ```
 
-4. **Push and create PR**
+5. **Push and create PR**
    ```bash
    git push origin feat/your-feature-name
    ```
 
-5. **Fill out the PR template**
+6. **Fill out the PR template**
 
 ### PR Template
 
@@ -305,11 +335,13 @@ Brief description of the changes
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
+- [ ] Content addition
 
 ## Testing
 - [ ] Tests pass locally
 - [ ] Added new tests
 - [ ] Manual testing completed
+- [ ] Build successful
 
 ## Screenshots
 If applicable, add screenshots
@@ -328,7 +360,7 @@ PRs will be reviewed for:
 - **Functionality** - Does it work as expected?
 - **Code Quality** - Is it readable and maintainable?
 - **Performance** - Any performance implications?
-- **Security** - Any security considerations?
+- **User Experience** - Does it improve the user experience?
 - **Tests** - Adequate test coverage?
 - **Documentation** - Is documentation updated?
 
@@ -356,7 +388,6 @@ If applicable, add screenshots.
 - OS: [e.g., macOS, Windows, Linux]
 - Browser: [e.g., Chrome, Firefox, Safari]
 - Node.js version: [e.g., 18.17.0]
-- Project version: [e.g., 1.2.3]
 
 **Additional context**
 Any other context about the problem.
@@ -389,11 +420,11 @@ Any other context, mockups, or examples.
 ```typescript
 // Good component structure
 interface ButtonProps {
-  children: React.ReactNode;
-  variant?: 'primary' | 'secondary';
-  size?: 'sm' | 'md' | 'lg';
-  onClick?: () => void;
-  disabled?: boolean;
+  children: React.ReactNode
+  variant?: 'primary' | 'secondary'
+  size?: 'sm' | 'md' | 'lg'
+  onClick?: () => void
+  disabled?: boolean
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -413,69 +444,50 @@ export const Button: React.FC<ButtonProps> = ({
     >
       {children}
     </button>
-  );
-};
+  )
+}
 ```
 
-#### API Routes
+### Content Processing
+
+#### Markdown Processing
 
 ```typescript
-// Good route structure
-import { Hono } from 'hono';
-import { z } from 'zod';
-import { validate } from '../middleware/validate';
+// Good markdown processing
+import { processMarkdown } from '@/lib/markdown'
 
-const app = new Hono();
+export const BlogPost: React.FC<{ content: string }> = ({ content }) => {
+  const [html, setHtml] = useState('')
 
-const createPostSchema = z.object({
-  title: z.string().min(1).max(200),
-  content: z.string().min(1),
-  tags: z.array(z.string()).optional(),
-});
+  useEffect(() => {
+    processMarkdown(content).then(setHtml)
+  }, [content])
 
-app.post(
-  '/posts',
-  validate(createPostSchema),
-  async (c) => {
-    const data = c.req.valid('json');
-    // Handle post creation
-    return c.json({ success: true });
-  }
-);
-```
-
-### Database Migrations
-
-```sql
--- migrations/001_create_posts_table.sql
-CREATE TABLE IF NOT EXISTS posts (
-  id TEXT PRIMARY KEY DEFAULT (hex(randomblob(16))),
-  title TEXT NOT NULL,
-  slug TEXT UNIQUE NOT NULL,
-  content TEXT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-
--- Always use IF NOT EXISTS for safety
--- Always provide default values where appropriate
--- Always create appropriate indexes
+  return (
+    <div
+      className="prose prose-lg prose-invert"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  )
+}
 ```
 
 ### Error Handling
 
 ```typescript
 // Good error handling
-try {
-  const result = await riskyOperation();
-  return c.json({ data: result });
-} catch (error) {
-  logger.error('Operation failed', { error: error.message });
-  
-  if (error instanceof ValidationError) {
-    return c.json({ error: 'Invalid data' }, 400);
+const BlogPage = () => {
+  const { data: posts, isLoading, error } = useFetchData(fetchPosts)
+
+  if (error) {
+    return (
+      <ErrorMessage>
+        Failed to load blog posts. Please try again later.
+      </ErrorMessage>
+    )
   }
-  
-  return c.json({ error: 'Internal server error' }, 500);
+
+  // ... rest of component
 }
 ```
 
@@ -493,10 +505,10 @@ We follow [Semantic Versioning](https://semver.org/):
 
 - [ ] All tests pass
 - [ ] Documentation updated
-- [ ] CHANGELOG.md updated
+- [ ] Content validated
+- [ ] Build successful
 - [ ] Version bumped
 - [ ] Tagged and released
-- [ ] Deployment tested
 
 ## 💬 Community
 
@@ -504,7 +516,6 @@ We follow [Semantic Versioning](https://semver.org/):
 
 - **GitHub Discussions** - General questions and ideas
 - **GitHub Issues** - Bug reports and feature requests
-- **Discord** - Real-time community chat
 - **Twitter** - Updates and announcements
 
 ### Code of Conduct
@@ -522,7 +533,7 @@ Contributors are recognized in:
 
 ---
 
-**Thank you for contributing to the Developer Blog Platform!** 
+**Thank you for contributing to the Developer Blog Platform!**
 
 Your contributions help make this project better for the entire developer community. If you have any questions, don't hesitate to reach out through our communication channels.
 

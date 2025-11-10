@@ -1,206 +1,249 @@
-# Developer Blog Platform 🚀
+# Developer Blog Platform
 
-A modern, reusable blog platform built specifically for developers. Built with React, TypeScript, Tailwind CSS, Hono.js, and Cloudflare technologies for maximum performance and scalability.
+A modern, static blog platform built with React, TypeScript, and Tailwind CSS. Write your content in Markdown and deploy anywhere.
 
-## 📸 Screenshot
+## Features
 
-![Developer Blog Platform](./docs/screen.png)
+- 🚀 **Static Site**: No backend required - deploy to any static hosting
+- 📝 **Markdown Content**: Write blog posts and project showcases in Markdown
+- 🎨 **Modern UI**: Responsive design with Tailwind CSS
+- ⚡ **Fast Performance**: Optimized static site with Vite
+- 🔍 **SEO Friendly**: Proper meta tags and semantic HTML
+- 🏷️ **Tag System**: Organize content with tags and categories
+- 📱 **Mobile First**: Responsive design that works on all devices
 
-*Modern, clean interface optimized for developer content with dark mode support and responsive design.*
+## Tech Stack
 
-## ✨ Features
+- **Frontend**: React 18 + TypeScript + Tailwind CSS + Vite
+- **Content**: Markdown with frontmatter support
+- **Processing**: Remark + Gray Matter for content parsing
+- **Testing**: Vitest + Testing Library
+- **Deployment**: Static site (Vercel, Netlify, GitHub Pages, etc.)
 
-- **Modern Tech Stack**: React 18 + TypeScript for type-safe development
-- **Beautiful UI**: Tailwind CSS for responsive, utility-first styling
-- **High Performance**: Hono.js for ultra-fast API endpoints
-- **Edge Deployment**: Cloudflare Workers for global distribution
-- **Database**: Cloudflare D1 for serverless SQLite database
-- **Markdown Support**: Write posts in Markdown with syntax highlighting
-- **SEO Optimized**: Built-in SEO features and meta tag management
-- **Responsive Design**: Mobile-first design that works on all devices
-- **Dark Mode**: Built-in dark/light theme switching
-- **Fast Loading**: Optimized for Core Web Vitals
-- **Developer Focused**: Code block highlighting, technical writing features
+## Project Structure
 
-## 🛠 Tech Stack
+```
+├── content/               # Markdown content
+│   ├── articles/         # Blog posts
+│   └── projects/         # Project showcases
+├── packages/
+│   └── frontend/         # React application
+│       ├── src/
+│       │   ├── components/  # Reusable UI components
+│       │   ├── features/    # Feature-specific components
+│       │   ├── lib/         # Content processing utilities
+│       │   └── styles/      # Global styles
+│       └── package.json
+├── docs/                  # Documentation
+├── docker-compose.yml     # Development environment
+└── README.md
+```
 
-### Frontend
-- **React 18** - Modern React with concurrent features
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Next-generation build tool
-
-### Backend
-- **Hono.js** - Ultra-fast web framework for Cloudflare Workers
-- **Cloudflare Workers** - Serverless compute platform
-- **Cloudflare D1** - Serverless SQLite database
-
-### Deployment
-- **Cloudflare Pages** - Frontend hosting
-- **Cloudflare Workers** - API hosting
-- **Cloudflare D1** - Database hosting
-
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
-- Cloudflare account
-- Wrangler CLI
+- Node.js 18+
+- pnpm (recommended) or npm
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/developer-blog-platform.git
-   cd developer-blog-platform
-   ```
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/developer-blog-platform.git
+cd developer-blog-platform
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
-
-4. **Initialize Cloudflare D1 database**
-   ```bash
-   npx wrangler d1 create blog-db
-   npx wrangler d1 execute blog-db --file=./schema.sql
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Start the API server**
-   ```bash
-   npm run dev:api
-   ```
-
-Visit `http://localhost:3000` to see your blog!
-
-## 📁 Project Structure
-
-```
-├── src/
-│   ├── components/          # Reusable React components
-│   ├── pages/              # Page components
-│   ├── hooks/              # Custom React hooks
-│   ├── utils/              # Utility functions
-│   ├── styles/             # Global styles and Tailwind config
-│   └── types/              # TypeScript type definitions
-├── api/
-│   ├── src/                # Hono.js API routes
-│   ├── db/                 # Database schema and migrations
-│   └── wrangler.toml       # Cloudflare Workers configuration
-├── docs/                   # Documentation
-├── public/                 # Static assets
-└── package.json
+# Install dependencies
+pnpm install
 ```
 
-## 📖 Documentation
+### Development
 
-For detailed documentation, see the [docs folder](./docs/):
+```bash
+# Start development server
+pnpm dev
 
-- [Getting Started](./docs/getting-started.md)
-- [API Reference](./docs/api-reference.md)
-- [Deployment Guide](./docs/deployment.md)
-- [Configuration](./docs/configuration.md)
-- [Contributing](./docs/contributing.md)
-
-## 🎨 Customization
-
-This platform is designed to be easily customizable:
-
-1. **Theming**: Modify Tailwind configuration in `tailwind.config.js`
-2. **Components**: Create your own components in `src/components/`
-3. **Layouts**: Customize page layouts in `src/components/layout/`
-4. **Content**: Add your own content types and fields
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env.local` file with the following variables:
-
-```env
-# Database
-DATABASE_URL=your-d1-database-url
-DATABASE_ID=your-d1-database-id
-
-# Authentication (optional)
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-
-# Analytics (optional)
-GOOGLE_ANALYTICS_ID=your-ga-id
+# The site will be available at http://localhost:5173
 ```
 
-### Cloudflare Configuration
+### Building
 
-Update `wrangler.toml` with your account details:
+```bash
+# Build for production
+pnpm build
 
-```toml
-name = "developer-blog-api"
-main = "src/index.ts"
-compatibility_date = "2023-10-30"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "blog-db"
-database_id = "your-database-id"
+# Preview production build
+pnpm preview
 ```
 
-## 🚀 Deployment
+## Content Management
 
-### Deploy to Cloudflare
+### Writing Blog Posts
 
-1. **Build the project**
-   ```bash
-   npm run build
-   ```
+Create new blog posts in `content/articles/` with the format `YYYY-MM-DD-title.md`:
 
-2. **Deploy the API**
-   ```bash
-   cd api && npm run deploy
-   ```
+```markdown
+---
+title: "Your Blog Post Title"
+date: "2024-11-10"
+author: "Your Name"
+description: "Brief description of the post"
+tags: ["tag1", "tag2", "tag3"]
+published: true
+---
 
-3. **Deploy the frontend**
-   ```bash
-   npm run deploy
-   ```
+# Your Blog Post
 
-For detailed deployment instructions, see [Deployment Guide](./docs/deployment.md).
+Your content here. Supports **bold**, *italic*, [links](https://example.com), and more.
 
-## 🤝 Contributing
+## Code Blocks
 
-We welcome contributions! Please see our [Contributing Guide](./docs/contributing.md) for details.
+```javascript
+function hello() {
+  console.log('Hello, World!')
+}
+```
 
-### Development Workflow
+## Lists
+
+- Item 1
+- Item 2
+- Item 3
+```
+
+### Writing Project Showcases
+
+Create project showcases in `content/projects/` with the format `project-name.md`:
+
+```markdown
+---
+title: "Project Name"
+date: "2024-11-05"
+author: "Your Name"
+description: "Brief project description"
+tags: ["technology", "category"]
+published: true
+demo: "https://project-demo.com"
+---
+
+# Project Title
+
+Project description, features, and details...
+```
+
+### Frontmatter Fields
+
+- `title`: Post/project title
+- `date`: Publication date (YYYY-MM-DD)
+- `author`: Author name
+- `description`: Brief description for previews
+- `tags`: Array of tags for categorization
+- `published`: Set to `false` to hide content
+- `demo`: (Projects only) Link to live demo
+
+## Development Workflow
+
+1. **Write Content**: Create markdown files in the appropriate content directory
+2. **Test Locally**: Run `pnpm dev` to preview changes
+3. **Build & Test**: Run `pnpm build` and `pnpm test` to ensure everything works
+4. **Deploy**: Push to your hosting platform
+
+## Available Scripts
+
+### Root Level
+- `pnpm install` - Install all dependencies
+- `pnpm dev` - Start development server
+- `pnpm build` - Build all packages
+- `pnpm preview` - Preview production build
+
+### Frontend Package
+- `pnpm dev` - Start Vite dev server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Lint code
+- `pnpm type-check` - Type check
+- `pnpm test` - Run tests
+- `pnpm test:watch` - Run tests in watch mode
+
+## Code Quality
+
+```bash
+# Lint code
+pnpm lint
+
+# Type checking
+pnpm type-check
+
+# Run tests
+pnpm test
+```
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Connect your GitHub repository to Vercel
+2. Vercel will automatically detect the Vite configuration
+3. Set build command: `pnpm build`
+4. Set output directory: `packages/frontend/dist`
+
+### Netlify
+
+1. Connect your repository to Netlify
+2. Set build command: `pnpm build`
+3. Set publish directory: `packages/frontend/dist`
+
+### GitHub Pages
+
+```bash
+# Build the project
+pnpm build
+
+# Deploy to GitHub Pages (requires GitHub CLI)
+gh-pages -d packages/frontend/dist
+```
+
+### Docker
+
+```bash
+# Build Docker image
+docker build -t blog-platform packages/frontend
+
+# Run container
+docker run -p 5173:5173 blog-platform
+```
+
+## Customization
+
+### Styling
+
+The project uses Tailwind CSS for styling. Customize the design by:
+
+1. Modifying `packages/frontend/src/styles/index.css`
+2. Updating the Tailwind configuration in `packages/frontend/tailwind.config.js`
+3. Adjusting component styles in the component files
+
+### Content Structure
+
+Feel free to modify the content directory structure and update the content processing utilities in `packages/frontend/src/lib/content.ts` to match your needs.
+
+### Adding Features
+
+The platform is built with modularity in mind. Add new features by:
+
+1. Creating new components in `packages/frontend/src/components/`
+2. Adding new pages in `packages/frontend/src/features/`
+3. Updating the routing in `packages/frontend/src/App.tsx`
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+4. Add tests for new functionality
+5. Ensure all tests pass
+6. Submit a pull request
 
-## 📄 License
+## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- [Hono.js](https://hono.dev/) for the amazing web framework
-- [Cloudflare](https://cloudflare.com/) for the edge platform
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [React](https://reactjs.org/) for the UI library
-
-
-**Built with ❤️ for the developer community**
+MIT
