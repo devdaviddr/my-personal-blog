@@ -2,6 +2,10 @@
 
 A modern, static blog platform built with React, TypeScript, and Tailwind CSS. Write your content in Markdown and deploy anywhere.
 
+## Preview
+
+![Developer Blog Platform Screenshot](docs/screen.png)
+
 ## Features
 
 - 🚀 **Static Site**: No backend required - deploy to any static hosting
