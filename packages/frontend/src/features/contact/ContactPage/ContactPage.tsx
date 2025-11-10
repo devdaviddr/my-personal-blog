@@ -1,4 +1,4 @@
-import PageWrapper from '../../../components/PageWrapper/PageWrapper'
+import PageWrapper from '../../../components/ui/PageWrapper/PageWrapper'
 
 const ContactPage = () => {
   return (

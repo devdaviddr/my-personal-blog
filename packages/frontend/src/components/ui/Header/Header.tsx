@@ -11,7 +11,7 @@ const Header = () => {
 
   return (
     <header className="fixed top-0 left-0 right-0 bg-black/90 backdrop-blur-sm z-10">
-      <nav className="container mx-auto px-4 py-4">
+      <nav className="max-w-7xl mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Name on the left */}
           <div className="text-xl font-bold text-foreground">

@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom'
 import { useFetchData } from '../../../hooks/useFetchData'
 import { fetchPosts } from '../../../lib/api'
-import PageWrapper from '../../../components/PageWrapper/PageWrapper'
-import Skeleton from '../../../components/Loading/Skeleton'
+import PageWrapper from '../../../components/ui/PageWrapper/PageWrapper'
+import Skeleton from '../../../components/ui/Loading/Skeleton'
 
 const BlogPage = () => {
   const { data: posts, isLoading, error } = useFetchData(fetchPosts)

@@ -1,6 +1,6 @@
 import { Routes, Route } from 'react-router-dom'
-import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary'
-import Layout from './components/Layout/Layout'
+import ErrorBoundary from './components/ui/ErrorBoundary/ErrorBoundary'
+import Layout from './components/ui/Layout/Layout'
 import HomePage from './features/home/HomePage/HomePage'
 import ProjectsPage from './features/projects/ProjectsPage/ProjectsPage'
 import ProjectDetail from './features/projects/ProjectDetail/ProjectDetail'
