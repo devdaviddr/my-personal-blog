@@ -3,10 +3,12 @@ import Header from '../Header/Header'
 
 const Layout = () => {
   return (
-    <>
+    <div className="min-h-screen bg-background text-foreground">
       <Header />
-      <Outlet />
-    </>
+      <main className="pt-20">
+        <Outlet />
+      </main>
+    </div>
   )
 }
 
