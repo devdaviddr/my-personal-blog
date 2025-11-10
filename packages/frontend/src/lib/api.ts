@@ -1,8 +1,6 @@
+import axios from 'axios'
+
 export async function fetchPosts() {
-  const response = await fetch('/api/posts')
-  if (!response.ok) {
-    throw new Error('Failed to fetch posts')
-  }
-  const data = await response.json()
-  return data.posts
+  const response = await axios.get('/api/posts')
+  return response.data.posts
 }

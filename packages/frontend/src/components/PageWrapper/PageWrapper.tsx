@@ -5,8 +5,8 @@ interface PageWrapperProps {
 
 const PageWrapper: React.FC<PageWrapperProps> = ({ bgColor, children }) => {
   return (
-    <div className={`min-h-screen w-full flex items-center justify-center ${bgColor}`}>
-      <div className="text-center">
+    <div className={`w-full ${bgColor} py-12 px-4`}>
+      <div className="max-w-7xl mx-auto">
         {children}
       </div>
     </div>
