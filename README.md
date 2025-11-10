@@ -1,206 +1,174 @@
-# Developer Blog Platform 🚀
+# Developer Blog Platform
 
-A modern, reusable blog platform built specifically for developers. Built with React, TypeScript, Tailwind CSS, Hono.js, and Cloudflare technologies for maximum performance and scalability.
+A modern, reusable blog platform built with React, TypeScript, Tailwind CSS, Hono.js, and Cloudflare technologies.
 
-## 📸 Screenshot
+## Monorepo Structure
 
-![Developer Blog Platform](./docs/screen.png)
+This project uses a monorepo structure with the following packages:
 
-*Modern, clean interface optimized for developer content with dark mode support and responsive design.*
+- `packages/frontend` - React + Vite + TypeScript + Tailwind frontend
+- `packages/backend` - Hono.js + TypeScript API server
 
-## ✨ Features
-
-- **Modern Tech Stack**: React 18 + TypeScript for type-safe development
-- **Beautiful UI**: Tailwind CSS for responsive, utility-first styling
-- **High Performance**: Hono.js for ultra-fast API endpoints
-- **Edge Deployment**: Cloudflare Workers for global distribution
-- **Database**: Cloudflare D1 for serverless SQLite database
-- **Markdown Support**: Write posts in Markdown with syntax highlighting
-- **SEO Optimized**: Built-in SEO features and meta tag management
-- **Responsive Design**: Mobile-first design that works on all devices
-- **Dark Mode**: Built-in dark/light theme switching
-- **Fast Loading**: Optimized for Core Web Vitals
-- **Developer Focused**: Code block highlighting, technical writing features
-
-## 🛠 Tech Stack
-
-### Frontend
-- **React 18** - Modern React with concurrent features
-- **TypeScript** - Type-safe JavaScript
-- **Tailwind CSS** - Utility-first CSS framework
-- **Vite** - Next-generation build tool
-
-### Backend
-- **Hono.js** - Ultra-fast web framework for Cloudflare Workers
-- **Cloudflare Workers** - Serverless compute platform
-- **Cloudflare D1** - Serverless SQLite database
-
-### Deployment
-- **Cloudflare Pages** - Frontend hosting
-- **Cloudflare Workers** - API hosting
-- **Cloudflare D1** - Database hosting
-
-## 🚀 Quick Start
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+ 
-- npm or yarn
-- Cloudflare account
-- Wrangler CLI
+- Node.js 18+
+- npm
 
 ### Installation
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/developer-blog-platform.git
-   cd developer-blog-platform
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env.local
-   # Edit .env.local with your configuration
-   ```
-
-4. **Initialize Cloudflare D1 database**
-   ```bash
-   npx wrangler d1 create blog-db
-   npx wrangler d1 execute blog-db --file=./schema.sql
-   ```
-
-5. **Start development server**
-   ```bash
-   npm run dev
-   ```
-
-6. **Start the API server**
-   ```bash
-   npm run dev:api
-   ```
-
-Visit `http://localhost:3000` to see your blog!
-
-## 📁 Project Structure
-
-```
-├── src/
-│   ├── components/          # Reusable React components
-│   ├── pages/              # Page components
-│   ├── hooks/              # Custom React hooks
-│   ├── utils/              # Utility functions
-│   ├── styles/             # Global styles and Tailwind config
-│   └── types/              # TypeScript type definitions
-├── api/
-│   ├── src/                # Hono.js API routes
-│   ├── db/                 # Database schema and migrations
-│   └── wrangler.toml       # Cloudflare Workers configuration
-├── docs/                   # Documentation
-├── public/                 # Static assets
-└── package.json
+```bash
+# Install all dependencies
+npm install
 ```
 
-## 📖 Documentation
+### Development
 
-For detailed documentation, see the [docs folder](./docs/):
+```bash
+# Start both frontend and backend in development mode
+npm run dev
 
-- [Getting Started](./docs/getting-started.md)
-- [API Reference](./docs/api-reference.md)
-- [Deployment Guide](./docs/deployment.md)
-- [Configuration](./docs/configuration.md)
-- [Contributing](./docs/contributing.md)
+# Or start them separately:
+# Frontend only
+cd packages/frontend && npm run dev
 
-## 🎨 Customization
-
-This platform is designed to be easily customizable:
-
-1. **Theming**: Modify Tailwind configuration in `tailwind.config.js`
-2. **Components**: Create your own components in `src/components/`
-3. **Layouts**: Customize page layouts in `src/components/layout/`
-4. **Content**: Add your own content types and fields
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create a `.env.local` file with the following variables:
-
-```env
-# Database
-DATABASE_URL=your-d1-database-url
-DATABASE_ID=your-d1-database-id
-
-# Authentication (optional)
-GITHUB_CLIENT_ID=your-github-client-id
-GITHUB_CLIENT_SECRET=your-github-client-secret
-
-# Analytics (optional)
-GOOGLE_ANALYTICS_ID=your-ga-id
+# Backend only
+cd packages/backend && npm run dev
 ```
 
-### Cloudflare Configuration
+### Building
 
-Update `wrangler.toml` with your account details:
+```bash
+# Build all packages
+npm run build
 
-```toml
-name = "developer-blog-api"
-main = "src/index.ts"
-compatibility_date = "2023-10-30"
-
-[[d1_databases]]
-binding = "DB"
-database_name = "blog-db"
-database_id = "your-database-id"
+# Build individual packages
+cd packages/frontend && npm run build
+cd packages/backend && npm run build
 ```
 
-## 🚀 Deployment
+### Testing
 
-### Deploy to Cloudflare
+```bash
+# Run all tests
+npm test
 
-1. **Build the project**
-   ```bash
-   npm run build
-   ```
+# Run tests for individual packages
+cd packages/frontend && npm test
+cd packages/backend && npm test
+```
 
-2. **Deploy the API**
-   ```bash
-   cd api && npm run deploy
-   ```
+### Code Quality
 
-3. **Deploy the frontend**
-   ```bash
-   npm run deploy
-   ```
+```bash
+# Lint all packages
+npm run lint
 
-For detailed deployment instructions, see [Deployment Guide](./docs/deployment.md).
+# Type check all packages
+npm run type-check
+```
 
-## 🤝 Contributing
+## Project Structure
 
-We welcome contributions! Please see our [Contributing Guide](./docs/contributing.md) for details.
+```
+├── packages/
+│   ├── frontend/
+│   │   ├── src/
+│   │   │   ├── components/     # React components
+│   │   │   ├── pages/         # Page components
+│   │   │   ├── hooks/         # Custom hooks
+│   │   │   ├── utils/         # Utility functions
+│   │   │   ├── types/         # TypeScript types
+│   │   │   ├── lib/           # API clients, configs
+│   │   │   ├── styles/        # Global styles
+│   │   │   ├── assets/        # Static assets
+│   │   │   ├── constants/     # App constants
+│   │   │   └── contexts/      # React contexts
+│   │   ├── package.json
+│   │   ├── vite.config.ts
+│   │   └── tsconfig.json
+│   └── backend/
+│       ├── src/
+│       │   ├── routes/        # API routes
+│       │   ├── middleware/    # Hono middleware
+│       │   ├── services/      # Business logic
+│       │   ├── db/           # Database schemas
+│       │   ├── types/        # API types
+│       │   └── utils/        # Utility functions
+│       ├── package.json
+│       └── tsconfig.json
+├── .eslintrc.js               # Shared ESLint config
+├── .prettierrc               # Shared Prettier config
+├── tsconfig.base.json        # Shared TypeScript config
+└── package.json              # Root package with workspaces
+```
 
-### Development Workflow
+## Tech Stack
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+### Frontend
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Vite** - Build tool and dev server
+- **Tailwind CSS** - Utility-first CSS framework
+- **Vitest** - Testing framework
 
-## 📄 License
+### Backend
+- **Hono.js** - Web framework for Cloudflare Workers
+- **TypeScript** - Type safety
+- **Vitest** - Testing framework
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Development Workflow
 
-## 🙏 Acknowledgments
+1. **Write tests first** (TDD approach)
+2. **Implement features** in small, testable increments
+3. **Run tests** to ensure everything works
+4. **Refactor** while keeping tests passing
+5. **Commit** with conventional commit messages
 
-- [Hono.js](https://hono.dev/) for the amazing web framework
-- [Cloudflare](https://cloudflare.com/) for the edge platform
-- [Tailwind CSS](https://tailwindcss.com/) for the utility-first CSS framework
-- [React](https://reactjs.org/) for the UI library
+## Scripts
 
+### Root Level Scripts
+- `npm run dev` - Start both frontend and backend
+- `npm run build` - Build all packages
+- `npm run lint` - Lint all packages
+- `npm run type-check` - Type check all packages
+- `npm test` - Run all tests
+- `npm run clean` - Clean all build artifacts
 
-**Built with ❤️ for the developer community**
+### Frontend Scripts
+- `npm run dev` - Start Vite dev server
+- `npm run build` - Build for production
+- `npm run preview` - Preview production build
+- `npm run lint` - Lint code
+- `npm run type-check` - Type check
+- `npm test` - Run tests
+
+### Backend Scripts
+- `npm run dev` - Start Hono dev server with hot reload
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Lint code
+- `npm run type-check` - Type check
+- `npm test` - Run tests
+
+## API Endpoints
+
+### Health Check
+```
+GET /health
+```
+
+### Posts
+```
+GET  /api/posts     # Get all posts
+POST /api/posts     # Create a new post
+```
+
+## Contributing
+
+See [AGENTS.md](./AGENTS.md) for detailed guidelines for agentic coding assistants.
+
+## License
+
+MIT
