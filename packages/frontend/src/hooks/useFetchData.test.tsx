@@ -30,7 +30,7 @@ const createWrapper = () => {
 describe('useFetchData', () => {
   it('should fetch data successfully', async () => {
     const mockData = { message: 'Hello' }
-    mockedAxios.get.mockResolvedValueOnce({ data: mockData })
+    ;(mockedAxios.get as any).mockResolvedValueOnce({ data: mockData }) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const { result } = renderHook(() => useFetchData('/api/test'), {
       wrapper: createWrapper(),
@@ -48,7 +48,7 @@ describe('useFetchData', () => {
 
   it('should handle error', async () => {
     const errorMessage = 'Network Error'
-    mockedAxios.get.mockRejectedValueOnce(new Error(errorMessage))
+    ;(mockedAxios.get as any).mockRejectedValueOnce(new Error(errorMessage)) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const { result } = renderHook(() => useFetchData('/api/test'), {
       wrapper: createWrapper(),

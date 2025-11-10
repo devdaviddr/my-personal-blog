@@ -30,7 +30,7 @@ const createWrapper = () => {
 describe('useFetchUser', () => {
   it('should fetch user successfully', async () => {
     const mockUser = { id: '1', name: 'John Doe' }
-    mockedAxios.get.mockResolvedValueOnce({ data: mockUser })
+    ;(mockedAxios.get as any).mockResolvedValueOnce({ data: mockUser }) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const { result } = renderHook(() => useFetchUser('1'), {
       wrapper: createWrapper(),
@@ -48,7 +48,7 @@ describe('useFetchUser', () => {
 
   it('should handle error', async () => {
     const errorMessage = 'User not found'
-    mockedAxios.get.mockRejectedValueOnce(new Error(errorMessage))
+    ;(mockedAxios.get as any).mockRejectedValueOnce(new Error(errorMessage)) // eslint-disable-line @typescript-eslint/no-explicit-any
 
     const { result } = renderHook(() => useFetchUser('1'), {
       wrapper: createWrapper(),

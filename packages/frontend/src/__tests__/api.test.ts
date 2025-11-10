@@ -16,7 +16,7 @@ describe('API Client', () => {
       ],
     }
 
-    ;(global.fetch as any).mockResolvedValueOnce({
+    ;(global.fetch as any).mockResolvedValueOnce({ // eslint-disable-line @typescript-eslint/no-explicit-any
       ok: true,
       json: () => Promise.resolve(mockPosts),
     })
